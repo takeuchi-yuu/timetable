@@ -3,7 +3,7 @@ export class HomePage extends HTMLElement {
   shadowRoot = undefined;
 
   html = () => /* html */ `
-  <span>home page</span>
+    <span>home page</span>
   `;
 
   constructor() {
@@ -11,7 +11,7 @@ export class HomePage extends HTMLElement {
     this.shadowRoot = this.attachShadow({ mode: "open" });
   }
 
-  connectedCallBack() {
+  connectedCallback() {
     this.render();
   }
 
