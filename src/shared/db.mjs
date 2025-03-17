@@ -89,3 +89,5 @@ class _DB {
     });
   }
 }
+
+export const DB = new _DB();
