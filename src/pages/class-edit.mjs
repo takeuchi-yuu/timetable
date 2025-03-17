@@ -2,8 +2,22 @@ export class ClassEditPage extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
 
+  css = () => /* css */ `
+    ${basicStyle}
+  `;
+
   html = () => /* html */ `
-    <span>class edit page</span>
+    <div class="class-edit">
+      <div class="header">
+        <button class="move-list">⬅️</button>
+        <span>class edit page</span>
+        <button class="save">💾</button>
+      </div>
+      <div class="input-container">
+        <span>科目名</span>
+        <input type="text" id="class-name"/>
+      </div>
+    </div>
   `;
 
   constructor() {
