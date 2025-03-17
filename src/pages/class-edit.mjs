@@ -101,5 +101,12 @@ export class ClassEditPage extends HTMLElement {
 
       await DB.set(CLASS_STORE_NAME, data);
     });
+
+    const moveToListButton = this.shadowRoot.querySelector("button.move-list");
+    moveToListButton.addEventListener("click", () => {
+      const url = new URL(location.href);
+      url.hash = "#class-list";
+      location.href = url.href;
+    });
   }
 }
