@@ -29,6 +29,11 @@ export class ClassEditPage extends HTMLElement {
           background-color: transparent;
           font-size: 24px;
           text-align: center;
+          border-radius: 5px;
+          cursor: pointer;
+          &:hover {
+            background-color:rgb(212, 212, 212);
+          }
         }
 
         & > span {
