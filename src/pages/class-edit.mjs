@@ -1,4 +1,4 @@
-import { CLASS_STORE_NAME } from "../shared/db.mjs";
+import { DB, CLASS_STORE_NAME } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
 export class ClassEditPage extends HTMLElement {
