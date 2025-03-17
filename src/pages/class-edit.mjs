@@ -1,3 +1,4 @@
+import { CLASS_STORE_NAME } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
 export class ClassEditPage extends HTMLElement {
@@ -81,5 +82,19 @@ export class ClassEditPage extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = this.html();
+
+    const saveButton = this.shadowRoot.querySelector("button.save");
+    saveButton.addEventListener("click", async () => {
+      const className = this.shadowRoot.getElementById("class-name").value;
+      const classId = crypto.randomUUID();
+
+      /** @type {import("..\shared\types.mjs").ClassData} */
+      const data = {
+        id: classId,
+        name: className,
+      };
+
+      await DB.set(CLASS_STORE_NAME, data);
+    });
   }
 }
