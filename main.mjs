@@ -1,4 +1,5 @@
 import { routes } from "./src/routes.mjs";
+import "./src/register.mjs";
 
 async function onHashChange() {
   const hash = window.location.hash;
