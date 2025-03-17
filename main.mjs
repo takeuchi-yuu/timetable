@@ -1,4 +1,5 @@
 import { routes } from "./src/routes.mjs";
+import { DB, CLASS_STORE_NAME } from "./src/shared/db.mjs";
 import "./src/register.mjs";
 
 async function onHashChange() {
