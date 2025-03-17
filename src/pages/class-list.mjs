@@ -1,4 +1,4 @@
-export class ClassEditPage extends HTMLElement {
+export class ClassListPage extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
 
