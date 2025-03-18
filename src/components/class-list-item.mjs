@@ -20,7 +20,7 @@ export class ClassListItem extends HTMLElement {
     :host .class-list-item {
       height: 32px;
       width: 100%;
-      padding: 0 16px
+      padding: 0 16px;
       display: flex;
       align-items: center;
 
