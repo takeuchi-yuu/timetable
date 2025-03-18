@@ -61,4 +61,17 @@ export class TimeTableComponent extends HTMLElement {
       })()}
     </div>
   `;
+
+  constructor() {
+    super();
+    this.shadowRoot = this.attachShadow({ mode: "open" });
+  }
+
+  async connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    this.innerHTML = this.html();
+  }
 }
