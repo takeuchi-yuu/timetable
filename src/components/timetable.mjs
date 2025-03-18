@@ -4,12 +4,6 @@ export class TimeTableComponent extends HTMLElement {
   /** @type {ShadowRoot | undefined} */
   shadowRoot = undefined;
 
-  /** @type {import("../types.mjs").ClassData[]} */
-  classDatas = [];
-
-  /** @type {import("../types.mjs").TableData} */
-  tableData = undefined;
-
   css = () => /* css */ `
     ${basicStyle}
 

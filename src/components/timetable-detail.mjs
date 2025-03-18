@@ -4,6 +4,12 @@ export class TimeTableDetailComponent extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
 
+  /** @type {import("../types.mjs").ClassData[]} */
+  classDatas = [];
+
+  /** @type {import("../types.mjs").TableData} */
+  tableData = undefined;
+
   static observedAttributes = ["day-period"];
   /** @type { import("../types.mjs").ClassData } */
   get dayPeriod() {
