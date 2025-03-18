@@ -95,18 +95,21 @@ export class ClassEditPage extends HTMLElement {
 
       /** @type {import("..\shared\types.mjs").ClassData} */
       const data = {
-        id: classId,
+        id: new URLSearchParams(window.location.search).get("classId") || crypto.randomUUID(),
         name: className,
       };
 
       await DB.set(CLASS_STORE_NAME, data);
+      this.moveToList();
     });
 
     const moveToListButton = this.shadowRoot.querySelector("button.move-list");
-    moveToListButton.addEventListener("click", () => {
-      const url = new URL(location.href);
-      url.hash = "#class-list";
-      location.href = url.href;
-    });
+    moveToListButton.addEventListener("click", this.moveToList);
+  }
+
+  moveToList() {
+    const url = new URL(location.href);
+    url.hash = "#class-list";
+    location.href = url.href;
   }
 }
