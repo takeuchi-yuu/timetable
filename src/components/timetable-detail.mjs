@@ -1,4 +1,4 @@
-import { DB, TABLE_STORE_NAME } from "../shared/db.mjs";
+import { CLASS_STORE_NAME, DB, TABLE_STORE_NAME } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
 export class TimeTableDetailComponent extends HTMLElement {
@@ -16,7 +16,8 @@ export class TimeTableDetailComponent extends HTMLElement {
   static observedAttributes = ["day-period"];
   /** @type { import("../types.mjs").ClassData } */
   get dayPeriod() {
-    return this.getAttribute("day-period");
+    // return this.getAttribute("day-period");
+    return "水-2";
   }
 
   get day() {
@@ -100,10 +101,49 @@ export class TimeTableDetailComponent extends HTMLElement {
     }
     this.classDatas = await DB.getAll(CLASS_STORE_NAME);
 
-    this.classList = this.render();
+    this.render();
+  }
+
+  async attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "dayperiod") {
+      this.isEditting = false;
+      this.tableData = /** @type { import("../types.mjs").TableData } */ (
+        await DB.get(TABLE_STORE_NAME, newValue)
+      );
+      this.render();
+    }
   }
 
   render() {
     this.shadowRoot.innerHTML = this.html();
+    if (this.dayPeriod) {
+      this.shadowRoot
+        .querySelector("button.header-button")
+        .addEventListener("click", this.onClickHeaderButton);
+    }
   }
+
+  onClickHeaderButton = async () => {
+    if (this.isEditing) {
+      const id = /** @type {HTMLSelectElement} */ (
+        this.shadowRoot.querySelector("select#class-select")
+      ).value;
+      if (id === "empty") {
+        this.tableData = undefined;
+        await DB.delete(TABLE_STORE_NAME, this.dayPeriod);
+      } else {
+        this.tableData = { dayperiod: this.dayPeriod, classId: id };
+        await DB.set(
+          TABLE_STORE_NAME,
+          /** @type {import("../types.mjs").TableData} */ (this.tableData)
+        );
+      }
+      // 親になるHomePageで時間割表の内容が書き換えられたことを検知するため
+      this.dispatchEvent(
+        new CustomEvent("tableItemChange", { bubbles: true, composed: true, detail: null })
+      );
+    }
+    this.isEditing = !this.isEditing;
+    this.render();
+  };
 }
