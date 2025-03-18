@@ -36,4 +36,36 @@ export class TimeTableDetailComponent extends HTMLElement {
       }
     }
   `;
+
+  html = () => /* html */ `
+    <style>${this.css()}</style>
+    <div class="timetable-detail">
+      ${(() => {
+        if (!this.dayPeriod) {
+          return /* html */ `
+            <div class="empty">
+              <span>授業を選択してください</span>
+            </div>
+          `;
+        } else {
+          return /* html */ `
+            <span>${this.dayPeriod}</span>
+          `;
+        }
+      })()}
+    </div>
+  `;
+
+  constructor() {
+    super();
+    this.shadowRoot = this.attachShadow({ mode: "open" });
+  }
+
+  async connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = this.html();
+  }
 }
