@@ -49,7 +49,13 @@ export class ClassListPage extends HTMLElement {
     & > .list {
       height: 100%;
       width: 100%;
-      overflow: scroll;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      
+      & > class-list-item {
+        margin-bottom: 8px;
+      }
     }
   }
 `;
