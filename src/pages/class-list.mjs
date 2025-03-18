@@ -64,6 +64,13 @@ export class ClassListPage extends HTMLElement {
       </div>
       <div class="list">
       </div>
+      ${this.classDatas
+        .map(
+          (classData) => /* html */ `
+            <class-list-item class-data=${JSON.stringify(classData)}></class-list-item>
+          `
+        )
+        .join("")}
     </div>
   `;
 
@@ -73,7 +80,7 @@ export class ClassListPage extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.classDatas = DB.getAll(CLASS_STORE_NAME);
+    this.classDatas = await DB.getAll(CLASS_STORE_NAME);
 
     this.render();
   }
