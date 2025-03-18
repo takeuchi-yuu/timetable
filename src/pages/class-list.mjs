@@ -74,5 +74,15 @@ export class ClassListPage extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = this.html();
+
+    const addClassButton = this.shadowRoot.querySelector("button.add");
+    const moveToHomeButton = this.shadowRoot.querySelector("button.move-home");
+
+    addClassButton.addEventListener("click", () => {
+      const url = new URL(location.href);
+      url.hash = "#class-edit";
+      location.href = url.href;
+    });
+    // moveToHomeButton.addEventListener("click");
   }
 }
