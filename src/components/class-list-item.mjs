@@ -10,6 +10,7 @@ export class ClassListItem extends HTMLElement {
    * @type { import("../types.mjs").ClassData }
    */
   get classData() {
+    // console.log("class-data is " + this.getAttribute("class-data"));
     return JSON.parse(this.getAttribute("class-data"));
   }
 
@@ -39,7 +40,7 @@ export class ClassListItem extends HTMLElement {
 
   constructor() {
     super();
-    this.shadowRoot() = this.attachShadow({ mode : "open" });
+    this.shadowRoot = this.attachShadow({ mode: "open" });
   }
 
   connectedCallback() {
@@ -54,5 +55,4 @@ export class ClassListItem extends HTMLElement {
       url.search = new URLSearchParams({ classId: this.classData.id }).toString();
     });
   }
-
 }
