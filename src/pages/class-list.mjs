@@ -1,3 +1,5 @@
+import { basicStyle } from "../shared/style.mjs";
+
 export class ClassListPage extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
@@ -29,6 +31,7 @@ export class ClassListPage extends HTMLElement {
         cursor: pointer;
         &:hover {
           background-color:rgb(212, 212, 212);        
+        }
       }
 
       & > span {
