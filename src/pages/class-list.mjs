@@ -1,8 +1,12 @@
 import { basicStyle } from "../shared/style.mjs";
+import { DB, CLASS_STORE_NAME } from "../shared/db.mjs";
 
 export class ClassListPage extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
+
+  /** @type { import("../types.mjs").ClassData[] } */
+  classDatas = [];
 
   css = () => /* css */ `
   ${basicStyle}
@@ -68,7 +72,9 @@ export class ClassListPage extends HTMLElement {
     this.shadowRoot = this.attachShadow({ mode: "open" });
   }
 
-  connectedCallback() {
+  async connectedCallback() {
+    this.classDatas = DB.getAll(CLASS_STORE_NAME);
+
     this.render();
   }
 
