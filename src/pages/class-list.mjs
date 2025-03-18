@@ -69,7 +69,6 @@ export class ClassListPage extends HTMLElement {
         <button class="add">➕</button>
       </div>
       <div class="list">
-      </div>
       ${this.classDatas
         .map(
           (classData) => /* html */ `
@@ -77,6 +76,7 @@ export class ClassListPage extends HTMLElement {
           `
         )
         .join("")}
+      </div>
     </div>
   `;
 

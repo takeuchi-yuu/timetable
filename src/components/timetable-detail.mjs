@@ -1,29 +1,29 @@
-import { CLASS_STORE_NAME, DB, TABLE_STORE_NAME } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
+import { TABLE_STORE_NAME, CLASS_STORE_NAME, DB, TABLE_STORE_KEY } from "../shared/db.mjs";
 
-export class TimeTableDetailComponent extends HTMLElement {
-  /** @type { ShadowRoot | undefined } */
+export class TimetableDetailComponent extends HTMLElement {
+  /** @type {ShadowRoot | undefined} */
   shadowRoot = undefined;
-
-  /** @type {import("../types.mjs").ClassData[]} */
-  classDatas = [];
 
   /** @type {import("../types.mjs").TableData} */
   tableData = undefined;
+  /** @type {import("../types.mjs").ClassData[]} */
+  classDatas = [];
+  get classData() {
+    return this.classDatas.find((classData) => classData.id === this.tableData?.classId);
+  }
 
-  isEditting = false;
+  /** 編集モードに入っていれば真 */
+  isEditing = false;
 
   static observedAttributes = ["day-period"];
-  /** @type { import("../types.mjs").ClassData } */
   get dayPeriod() {
-    // return this.getAttribute("day-period");
-    return "水-2";
+    return this.getAttribute("dayperiod");
   }
 
   get day() {
     return this.dayPeriod.split("-")[0];
   }
-
   get period() {
     return this.dayPeriod.split("-")[1];
   }
@@ -38,55 +38,76 @@ export class TimeTableDetailComponent extends HTMLElement {
       border-top: 2px solid lightgray;
 
       > .empty {
-        width: 100%;
         height: 100%;
+        width: 100%;
         display: grid;
         place-content: center;
         color: gray;
+      }
+
+      > .header {
+        height: 32px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        & > button.header-button {
+          height: 32px;
+          width: 32px;
+          margin-left: auto;
+          border: none;
+          display: grid;
+          place-content: center;
+          background-color: transparent;
+          font-size 24px;
+        }
+      }
+
+      & select {
+        height: 32px;
+        width: 100%;
+        padding: 0 16px;
+        border-radius: 100vh;
       }
     }
   `;
 
   html = () => {
+    /** 時間が未選択のときに表示する内容 */
     const empty = () => /* html */ `
       <div class="empty">
         <span>授業を選択してください</span>
       </div>
     `;
 
+    /** 空きコマが設定できるように、セレクトボックスの候補で使う配列に空きコマを追加しておく */
     const classDatas = [{ id: "empty", name: "空き" }, ...this.classDatas];
-
-    const contentFull = () => /* html */ `
+    /** 時間が選択済みのときに表示する内容 */
+    const contentfull = () => /* html */ `
       <div class="header">
-        <span>${this.day}曜日 ${this.period}限目</span>
-        <button class="header-button">${this.isEditting ? "💾" : "✏️"}</button>
+        <span>${this.day}曜日 ${this.period}時間目</span>
+        <button class="header-button">${this.isEditing ? "💾" : "✏️"}</button>
       </div>
       <div>${
-        this.isEditting
-          ? /* html */ `
-              <select id="class-select">
-                ${classDatas.map(
-                  (classData) => /* html */ `
-                    <option value="${classData.id}
-                            ${classData.id === this.classData?.id ? "selected" : ""}">
-                  `
-                )}
-              </select>
-            `
+        this.isEditing
+          ? /* html */ `<select id="class-select">${classDatas.map(
+              (classData) => /* html */ `
+                  <option value="${classData.id}" ${
+                classData.id === this.classData?.id ? "selected" : ""
+              }>${classData.name}</option>
+              `
+            )}</select>`
           : !this.tableData
-          ? /* html */ `
-              <span>空きコマ</span>
-            `
-          : /* html */ `
-              <span>${this.classData.name}</span>
-            `
-      }
-      </div>
+          ? /* html */ `<span>空きコマ</span>`
+          : /* html */ `<span>${this.classData.name}</span>`
+      }</div>
     `;
 
     return /* html */ `
-      <style>${this.css()}</style>
-      ${!this.dayPeriod ? empty() : contentFull()}
+    <style>${this.css()}</style>
+    <div class="timetable-detail">
+      ${!this.dayPeriod ? empty() : contentfull()}
+    </div>
     `;
   };
 
@@ -97,17 +118,17 @@ export class TimeTableDetailComponent extends HTMLElement {
 
   async connectedCallback() {
     if (this.dayPeriod) {
-      this.tableData = await DB.get(TABLE_STORE_NAME);
+      this.tableData = await DB.get(TABLE_STORE_NAME, this.dayPeriod);
     }
     this.classDatas = await DB.getAll(CLASS_STORE_NAME);
 
-    this.render();
+    this.classList = this.render();
   }
 
   async attributeChangedCallback(name, oldValue, newValue) {
     if (name === "dayperiod") {
-      this.isEditting = false;
-      this.tableData = /** @type { import("../types.mjs").TableData } */ (
+      this.isEditing = false;
+      this.tableData = /** @type {import("../types/table-data.mjs").TableData} */ (
         await DB.get(TABLE_STORE_NAME, newValue)
       );
       this.render();
@@ -116,6 +137,7 @@ export class TimeTableDetailComponent extends HTMLElement {
 
   render() {
     this.shadowRoot.innerHTML = this.html();
+
     if (this.dayPeriod) {
       this.shadowRoot
         .querySelector("button.header-button")

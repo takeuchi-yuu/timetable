@@ -1,8 +1,24 @@
+import { CLASS_STORE_NAME, DB, TABLE_STORE_NAME } from "../shared/db.mjs";
 import { basicStyle } from "../shared/style.mjs";
 
-export class TimeTableComponent extends HTMLElement {
+export class TimetableComponent extends HTMLElement {
   /** @type {ShadowRoot | undefined} */
   shadowRoot = undefined;
+
+  static observedAttributes = ["render-id"];
+  get renderId() {
+    return this.getAttribute("render-id");
+  }
+
+  /** @type {import("../types.mjs").ClassData[]} */
+  classDatas = [];
+  /** @type {import("../types.mjs").TableData[]} */
+  tableDatas = [];
+
+  classDataDayPeriod = (dayperiod) => {
+    const id = this.tableDatas.find((tabledata) => tabledata.dayperiod === dayperiod)?.classId;
+    return this.classDatas.find((classData) => classData.id === id);
+  };
 
   css = () => /* css */ `
     ${basicStyle}
@@ -28,38 +44,25 @@ export class TimeTableComponent extends HTMLElement {
   html = () => /* html */ `
     <style>${this.css()}</style>
     <div class="timetable">
-      ${(() => {
-        const days = ["月", "火", "水", "木", "金"];
-        const periods = [0, 1, 2, 3, 4];
-        const elements = [];
-
-        for (const day of days) {
-          elements.push([]);
-          for (const period of periods) {
-            if (period === 0) {
-              // 列番号
-              elements.slice(-1)[0].push(/* html */ `
+      ${["月", "火", "水", "木", "金"]
+        .map((day) =>
+          [0, 1, 2, 3, 4]
+            .map((period) =>
+              period === 0
+                ? /* html */ `
                 <div class="table-header">
                   <span>${day}</span>
                 </div>
-                `);
-            } else {
-              // 教科
-              elements.slice(-1)[0].push(/* html */ `
-                <div class="class-item">
-                  <span>${day}${period}</span>
+              `
+                : /* html */ `
+                <div class="class-item" dayperiod="${`${day}-${period}`}" >
+                  <span>${this.classDataDayPeriod(`${day}-${period}`)?.name || "空き"}</span>
                 </div>
-                `);
-            }
-          }
-        }
-
-        return elements
-          .map((elm) => {
-            elm.join("");
-          })
-          .join("");
-      })()}
+              `
+            )
+            .join("")
+        )
+        .join("")}
     </div>
   `;
 
@@ -69,10 +72,30 @@ export class TimeTableComponent extends HTMLElement {
   }
 
   async connectedCallback() {
+    this.classDatas = await DB.getAll(CLASS_STORE_NAME);
+    this.tableDatas = await DB.getAll(TABLE_STORE_NAME);
     this.render();
   }
 
+  async attributeChangedCallback(name, oldValue, newValue) {
+    if ((name = "render-id")) {
+      this.render();
+    }
+  }
+
   render() {
-    this.innerHTML = this.html();
+    this.shadowRoot.innerHTML = this.html();
+
+    this.shadowRoot.querySelectorAll("div.class-item").forEach((elem) => {
+      elem.addEventListener("click", () => {
+        this.dispatchEvent(
+          new CustomEvent("tableItemClick", {
+            bubbles: true,
+            composed: true,
+            detail: elem.getAttribute("dayperiod"),
+          })
+        );
+      });
+    });
   }
 }

@@ -3,23 +3,19 @@ export class HomePage extends HTMLElement {
   /** @type { ShadowRoot | undefined } */
   shadowRoot = undefined;
 
+  renderId = undefined;
+
   css = () => /* css */ `
     ${basicStyle}
 
     :host .home {
       width: 100%;
       height: 100%;
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: 32px repeat(4, 1fr);
-      place-content: center;
+      display: flex;
+      flex-direction: column;
 
-      & > .class-item {
-        width: 100%;
-        height: 100%;
-        display: grid;
-        place-content: center;
+      & > timetable-component {
+        height: 60%;
       }
     }
   `;
@@ -27,23 +23,11 @@ export class HomePage extends HTMLElement {
   html = () => /* html */ `
     <style>${this.css()}</style>
     <div class="home">
-      ${(() => {
-        const days = ["月", "火", "水", "木", "金"];
-        const periods = [0, 1, 2, 3, 4];
-        const elements = days.map((day) =>
-          periods
-            .map(
-              (period) => /* html */ `
-                    <div class="class-item">
-                      <span>${day}${period}</span>
-                    </div>
-                  `
-            )
-            .join("")
-        );
-        return elements.join("");
-      })()}
+      <timetable-component render-id="${this.renderId}"></timetable-component>
+      <timetable-detail dayperiod="${this.dayperiod ?? ""}"></timetable-detail>
+      <floating-link href="#class-list" emoji="📚"></floating-link>
     </div>
+
   `;
 
   constructor() {
@@ -53,6 +37,15 @@ export class HomePage extends HTMLElement {
 
   connectedCallback() {
     this.render();
+
+    this.shadowRoot.addEventListener("tableItemClick", (event) => {
+      this.dayperiod = event.detail;
+      this.render();
+    });
+    this.shadowRoot.addEventListener("tableItemChange", () => {
+      this.renderId = crypto.randomUUID();
+      this.render();
+    });
   }
 
   render() {
