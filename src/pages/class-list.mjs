@@ -83,6 +83,10 @@ export class ClassListPage extends HTMLElement {
       url.hash = "#class-edit";
       location.href = url.href;
     });
-    // moveToHomeButton.addEventListener("click");
+    moveToHomeButton.addEventListener("click", () => {
+      const url = new URL(location.href);
+      url.hash = "#home";
+      location.href = url.href;
+    });
   }
 }
