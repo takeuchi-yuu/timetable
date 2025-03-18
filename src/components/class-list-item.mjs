@@ -23,9 +23,15 @@ export class ClassListItem extends HTMLElement {
       padding: 0 16px;
       display: flex;
       align-items: center;
+      border-radius: 5px;
+      cursor: pointer;
 
       & span.arrow {
         margin-left: auto;
+      }
+
+      &:hover {
+        background-color: rgb(234, 234, 234);
       }
     }
   `;
@@ -53,6 +59,7 @@ export class ClassListItem extends HTMLElement {
       const url = new URL(location.href);
       url.hash = "#class-edit";
       url.search = new URLSearchParams({ classId: this.classData.id }).toString();
+      location.href = url.href;
     });
   }
 }
