@@ -5,26 +5,4 @@ export const basicStyle = /*css*/ `
   box-sizing: border-box;
 }
 
-html,
-body {
-  height: 100%;
-  max-height: 100svh;
-  width: 100%;
-  max-width: 100svw;
-  font-size: 16px;
-  overflow: hidden;
-}
-
-body {
-  padding: 8px;
-}
-
-app-root {
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
-  max-height: 100%;
-  overflow: hidden;
-}
-
 `;
