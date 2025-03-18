@@ -25,7 +25,25 @@ export class HomePage extends HTMLElement {
   `;
 
   html = () => /* html */ `
-    <span>home page</span>
+    <style>${this.css()}</style>
+    <div class="home">
+      ${(() => {
+        const days = ["月", "火", "水", "木", "金"];
+        const periods = [0, 1, 2, 3, 4];
+        const elements = days.map((day) =>
+          periods
+            .map(
+              (period) => /* html */ `
+                    <div class="class-item">
+                      <span>${day}${period}</span>
+                    </div>
+                  `
+            )
+            .join("")
+        );
+        return elements.join("");
+      })()}
+    </div>
   `;
 
   constructor() {
